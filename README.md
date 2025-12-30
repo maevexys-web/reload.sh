@@ -1,61 +1,53 @@
-# `reload.sh`
+<?php
+require_once 'lib/FraudLabsPro.php';
 
-<br>
+// Configures FraudLabs Pro API key
+FraudLabsPro\Configuration::apiKey('YOUR_API_KEY');
 
-<img src="https://i.imgur.com/QETbVXy.gif" align="center" title="reload.sh preview">
+// Order details
+$orderDetails = [
+	// IP parameter is optional, this library can detects IP address automatically
+	'ip'		=> '146.112.62.105',
 
-## Don't do it...
+	'order'		=> [
+		'orderId'		=> '67398',
+		'note'			=> 'Online shop',
+		'currency'		=> 'USD',
+		'amount'		=> '79.89',
+		'quantity'		=> 1,
 
-Please **don't do it on live systems** (e.g. production) or on your **private computer** where you **stored critical data**.
+		// Please refer reference section for full list of payment methods
+		'paymentGateway'	=> 'stripe',
+		'paymentMethod'	=> FraudLabsPro\Order::CREDIT_CARD,
+	],
 
-This recipe show you how to install fresh system where other system exist and running. It's really cool and amazing but very risky!
+	'card'		=> [
+		'number'	=> '4556553172971283',
+	],
 
-If you want to go into the chaos of monkey read on.
+	'billing'	=> [
+		'firstName'	=> 'Hector',
+		'lastName'	=> 'Henderson',
+		'email'		=> 'hh5566@gmail.com',
+		'phone'		=> '561-628-8674',
 
-## Why I created it?
+		'address'	=> '1766 Powder House Road',
+		'city'		=> 'West Palm Beach',
+		'state'		=> 'FL',
+		'postcode'	=> '33401',
+		'country'	=> 'US',
+	],
 
-I like experiments because I love to know how things work. They allow me to understand and show me some of the more tricky concepts.
+	'shipping'	=> [
+		'firstName'	=> 'Hector',
+		'lastName'	=> 'Henderson',
+		'address'	=> '4469 Chestnut Street',
+		'city'		=> 'Tampa',
+		'state'		=> 'FL',
+		'postcode'	=> '33602',
+		'country'	=> 'US',
+	],
+];
 
-Long time ago, this way saved my life but it was crazy.
-
-## How it works?
-
-  > A beginner's guide of [reload.sh](https://trimstray.github.io/dee625b8b2e43917031e204d545f767b.html) <sup>[PL]</sup>
-
-Set your archive with system backup to restore:
-
-```bash
-_build="/mnt/system-backup.tgz"
-```
-
-Set path to temporary system (optional):
-
-```bash
-_base="/mnt/minimal-base"
-```
-
-  > If you do not set this parameter, the temporary system will be downloaded automatically.
-
-Set path to main system disk:
-
-```bash
-_disk="/dev/vda"
-```
-
-Run `reload.sh`:
-
-```bash
-./bin/reload.sh --base "$_base" --build "$_build" --disk "$_disk"
-```
-
-## Contributing
-
-Before adding a pull request, please see the **[contributing guidelines](.github/CONTRIBUTING.md)**. All **suggestions/PR** are welcome!
-
-## See also
-
-* [`takeover.sh`](https://github.com/marcan/takeover.sh)
-
-## License
-
-GPLv3 : <http://www.gnu.org/licenses/>
+// Sends the order details to FraudLabs Pro
+$result = FraudLabsPro\Order::validate($orderDetails);
